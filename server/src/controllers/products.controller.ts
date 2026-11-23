@@ -1,10 +1,17 @@
 import getProducts from "../services/products.service.js";
 import type { Request, Response } from "express";
+import { listProductsQuerySchema } from "../schema/products.shema.js";
 
 const pageSize = 20
 
 export async function listProducts(req: Request, res: Response) {
-    const page = Math.max(1, Number(req.query.page) || 1)
+    const result = listProductsQuerySchema.safeParse(req.query);
+    if (!result.success) {
+        return res.status(400).json(result.error.issues)
+    }
+    const { page } = result.data;
     const { items, total } = await getProducts(page, pageSize);
     res.json({ items, total, page, pageSize })
+
 }
+
