@@ -1,11 +1,15 @@
 import { prisma } from "../lib/prisma.js"
 
-function getProducts() {
-    return prisma.product.findMany({
+async function getProducts(page: number, pageSize: number) {
+    const total = await prisma.product.count();
+    const skip = (page - 1) * pageSize
+    const items = await prisma.product.findMany({
         orderBy: {
             id: 'asc',
         },
-        take: 10
+        skip,
+        take: pageSize
     })
+    return { items, total };
 }
 export default getProducts
