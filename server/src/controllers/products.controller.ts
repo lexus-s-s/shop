@@ -7,8 +7,9 @@ export async function listProducts(req: Request, res: Response) {
     if (!result.success) {
         return res.status(400).json(result.error.issues)
     }
-    const { page, pageSize } = result.data;
-    const { items, total } = await getProducts(page, pageSize);
+    const { page, pageSize, search } = result.data;
+    const { items, total } = await getProducts(page, pageSize, search);
+
     res.json({ items, total, page, pageSize })
 
 }
